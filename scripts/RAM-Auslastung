@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# Überprüft die RAM-Auslastung und gibt einen Fehler aus, wenn sie über dem konfigurierten Wert liegt
+# Standard ist 80% Auslastung, kann durch Übergabe eines Wertes an das Skript geändert werden. Beispiel: max=95 setzt die maximale RAM-Auslastung auf 95%
+
+for ARGUMENT in "$@"
+do
+   KEY=$(echo $ARGUMENT | cut -f1 -d=)
+
+   KEY_LENGTH=${#KEY}
+   VALUE="${ARGUMENT:$KEY_LENGTH+1}"
+
+   export "$KEY"="$VALUE"
+done
+
+if [ -z "$max" ];
+then
+    max="80"
+fi
+
+RAM_USAGE=$(free | grep Mem | awk '{print int($3/$2 * 100)}')
+
+if [ $RAM_USAGE -le $max ]; 
+then
+    echo "RAM-Auslastung unter $max%. ($RAM_USAGE%)"
+    exit 0
+else
+    echo "RAM-Auslastung über $max%. ($RAM_USAGE%)"
+    exit 1
+fi
