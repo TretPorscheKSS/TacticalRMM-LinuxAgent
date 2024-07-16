@@ -83,4 +83,3 @@ go_install
 agent_compile
 update_agent
 echo "Tactical Agent Update ist fertig"
-exit 0
